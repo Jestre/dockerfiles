@@ -8,33 +8,33 @@ ENV GID=1000
 ADD run.sh /
 
 RUN BUILD_DEPS=" \
-    cmake \
     build-base \
-    libcurl \
-    libintl \
-    zlib-dev \
+    ca-certificates \
+    cmake \
     curl-dev \
-    perl-dev \
     gnutls-dev \
-    python2-dev \
+    jq \
+    libcurl \
+    libgcrypt-dev \
+    libintl \
     lua-dev \
     ncurses-dev \
-    libgcrypt-dev \
-    ca-certificates \
-    jq \
-    tar" \
+    perl-dev \
+    python2-dev \
+    tar \
+    zlib-dev" \
     && apk -U upgrade && apk add \
     ${BUILD_DEPS} \
+    curl \
     gnutls \
-    ncurses \
     libgcrypt \
-    python \
-    su-exec \
-    perl \
     lua \
     lua-cjson \
-    curl \
+    ncurses \
+    perl \
+    python \
     shadow \
+    su-exec \
     && update-ca-certificates \
     && WEECHAT_TARBALL="$(curl -sS https://api.github.com/repos/weechat/weechat/releases/latest | jq .tarball_url -r)" \
     && curl -sSL $WEECHAT_TARBALL -o /tmp/weechat.tar.gz \
@@ -43,18 +43,17 @@ RUN BUILD_DEPS=" \
     && cd /tmp/weechat/build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/usr \
     && make && make install \
-    && mkdir /weechat \
+    && mkdir -p /weechat/.weechat/lua/autoload \
     && addgroup -g $GID -S weechat \
     && adduser -u $UID -D -S -h /weechat -s /sbin/nologin -G weechat weechat \
+    && curl -sSL https://raw.githubusercontent.com/torhve/weechat-matrix-protocol-script/master/matrix.lua -o /weechat/.weechat/lua/matrix.lua \
+    && ln -s /weechat/.weechat/lua/matrix.lua /weechat/.weechat/lua/autoload/ \
     && apk del ${BUILD_DEPS} \
     && rm -rf /var/cache/apk/* \
     && rm -rf /tmp/*
-
-VOLUME /weechat
-
-WORKDIR /weechat
 
 EXPOSE 9001
 
 ENTRYPOINT ["/run.sh"]
 CMD ["--dir /weechat"]
+
