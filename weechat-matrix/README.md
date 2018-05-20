@@ -3,7 +3,7 @@ weechat-matrix
 
 Forked from: [jkaberg](https://github.com/jkaberg/dockerfiles)
 
-This is an automatically built Alpine Docker image for WeeChat which includes Lua and Lua-cjson so that it will support [torhve's weechat-matrix script](https://github.com/torhve/weechat-matrix-protocol-script). It will rebuild everytime there is a new release on [Github](https://github.com/weechat/weechat/releases) or when the [base image](https://hub.docker.com/_/alpine/) gets updated.
+This is an automatically built Alpine Docker image for WeeChat which includes Lua and Lua-cjson so that it will support [torhve's weechat-matrix script](https://github.com/torhve/weechat-matrix-protocol-script). It will (not yet) rebuild everytime there is a new release on [Github](https://github.com/weechat/weechat/releases), but will when the [base image](https://hub.docker.com/_/alpine/) gets updated.
 
 
 To run it simply use ```docker run```:
@@ -13,7 +13,7 @@ To run it simply use ```docker run```:
 or docker-compose:
 ```
   weechat:
-    image: jkaberg/weechat
+    image: greybeard/weechat
     restart: always
     stdin_open: true
     tty: true
